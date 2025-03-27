@@ -33,11 +33,11 @@ const convertDbObjectToResponseObject = (dbObject) => {
 };
 
 app.get("/players/", async(request, response) => {
-    const a = "
+    const a = `
     SELECT 
           *
           FROM 
-          cricket_team;";
+          cricket_team;`;
     const b = await db.all(a);
     response.send(b.map((i) => convertDbObjectToResponseObject(i)));
 });
@@ -45,26 +45,25 @@ app.get("/players/", async(request, response) => {
 app.post("/players/", async(request, response) => {
     const details = request.body;
     const {playerName, jerseyNumber, role} = details;
-    const api2 = 
-        INSERT INTO 
-        cricket_team(player_name, jersey_number, role)
-        VALUES 
-        (
-            "${playerName},
-            ${jerseyNumber},
-            ${role}");
+    const api2 = `
+    INSERT INTO 
+    cricket_team (player_name, jersey_number, role)
+    VALUES 
+    ('${playerName}', ${jerseyNumber}, '${role}');
+`;
     const db3 = await db.run(api2);
     response.send("Player Added to Team");
 });
 
 app.get("/players/:playerId/", async(request, response) => {
-    const api3 = "
+    const { playerId } = request.params; // Extract playerId
+const api3 = `
     SELECT 
        *
        FROM 
        cricket_team 
        WHERE 
-       player_id = ${playerId};";
+       player_id = ${playerId};`;
     const db2 = await db.get(api3);
     response.send(convertDbObjectToResponseObject(db2));
 });
@@ -73,7 +72,7 @@ app.put("/players/:playerId", async(request, response) => {
     const {playerId} = request.parans;
     const details = request.body;
     const {playerName, jerseyNumber, role} = details;
-    const api4 = "
+    const api4 = `
        UPDATE 
            cricket_team
        SET 
@@ -81,7 +80,7 @@ app.put("/players/:playerId", async(request, response) => {
           jersey_number = "${jerseyNumber}",
           role = "${role}"
        WHERE 
-          player_id = ${playerId};";
+          player_id = ${playerId};`;
        
        await db.run(api4);
        response.send("Player Details Updated");
@@ -89,12 +88,12 @@ app.put("/players/:playerId", async(request, response) => {
 
 app.delete("/players/:playerId/", async(request, response) => {
     const {playerId} = request.parans;
-    const api5 ="
+    const api5 =`
          DELETE 
          FROM 
             cricket_team 
         WHERE 
-            player_id = ${playerId};";
+            player_id = ${playerId};`;
     await db.run(api5);
     response.send("Player Removed"); 
 });
